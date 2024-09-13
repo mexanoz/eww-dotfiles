@@ -1,0 +1,55 @@
+(deflisten workspace "scripts/bin/workspace")
+(deflisten language "scripts/bin/language")
+
+;; LEFT
+
+(defwidget workspaces []
+    (literal
+     :class "workspaces"
+     :content workspace))
+
+(defwidget left []
+    (box :orientation "h"
+         :space-evenly false
+         :halign "start"
+         (workspaces)))
+
+;; CENTER
+
+(defwidget clock []
+    (label
+     :text { formattime(EWW_TIME, "%a, %-d %B %Y  %H:%M")}
+     :class "clock"))
+
+(defwidget center []
+    (box :orientation "h"
+         :space-evenly false
+         :halign "center"
+         (clock)))
+
+;; RIGHT
+
+(defwidget kblayout []
+    (label :text language))
+
+(defwidget right []
+    (box :orientation "h"
+         :space-evenly false
+         :halign "end"
+         :class "right"
+         (kblayout)))
+
+;; WINDOW
+
+(defwindow bar
+    :geometry (geometry
+               :width "100%"
+               :height "22px"
+               :anchor "bottom center")
+    :exclusive true
+    :stacking "fg"
+    :monitor 0
+    (box :orientation "h"
+         (left)
+         (center)
+         (right)))

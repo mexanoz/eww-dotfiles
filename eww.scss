@@ -1,0 +1,62 @@
+* {
+  all: unset; //Unsets everything so you can style everything from scratch
+}
+
+//Global Styles
+.bar {
+  font: 16px Cantarell, FontAwesome, Symbols Nerd Font Mono;
+  background-color: transparent;
+  color: #e1d9f4;
+}
+
+// LEFT
+
+.workspaces {
+  background: #282828;
+  margin: 0px 10px 5px 10px;
+  border-radius: 16px;
+  border: solid 0px #d9e1f4;
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.workspace-button {
+  padding: 10px;
+  padding-top: 2px;
+  padding-bottom: 3px;
+  border-radius: 16px;
+  color: #748392;
+}
+
+.workspace-button.active {
+  color: #e1d9f4;
+  border-radius: 16px;
+}
+
+.workspace-button:hover {
+  background-color: #b9c6e6;
+  color: black;
+  border-radius: 16px;
+  transition: all .3s;
+}
+
+// CENTER
+
+.clock {
+  color: #B9C6E6;
+  background-color: #282828;
+  border-radius: 24px 8px;
+  padding: 0px 15px;
+  font-weight: 500;
+  font-size: 18px;
+}
+
+// RIGHT
+
+.right {
+  background: #282828;
+  border-radius: 24px 0px 0px 4px;
+  padding-left: 10px;
+  // padding-bottom: 0px;
+}
+

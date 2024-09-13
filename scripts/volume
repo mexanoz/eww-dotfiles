@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+exec 2>/dev/null
+defaultsink=$(pactl -fjson list sinks | jq ".[] | select(.name == \"$(pactl get-default-sink)\").index")
+pactl -fjson subscribe | while read -r event; do
+    [[ $(jq "select(.event == \"change\" and .on == \"sink\" and .index == $defaultsink)" <<< "$event") ]] &&
+        pactl get-sink-volume "$defaultsink" | sed -En "s/.* ([[:digit:]]{1,3})%.*/\1/p"
+done
