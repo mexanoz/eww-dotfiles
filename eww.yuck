@@ -1,7 +1,7 @@
 (deflisten workspace "scripts/bin/workspace")
 (deflisten language "scripts/bin/language")
 (deflisten playerctl-output 'playerctl metadata -aFf \'{"status": "{{lc(status)}}", "player": "{{playerName}}", "artist": "{{artist}}", "title": "{{title}}"}\'')
-(deflisten wifi-status "scripts/wifi")
+(deflisten network-status "scripts/network")
 
 ;; LEFT
 
@@ -19,8 +19,8 @@
          (button :onclick "playerctl play-pause" 
              {playerctl-output != ""
                  ? playerctl-output.status == "playing"
-                     ? "󰐌 " 
-                     : "󰏥 "
+                     ? "󰏥 " 
+                     : "󰐌 "
                  : ""})
          (button :onclick "playerctl next" "󰒭 ")))
 
@@ -72,10 +72,10 @@
                                   ? "󱊢 "
                                   : "󱊣 "}"))
 
-(defwidget wifi []
-    (label :class "wifi"
-           :text {wifi-status.icon}
-           :tooltip {wifi-status.connection}))
+(defwidget network []
+    (label :class "network ${network-status.connection == "disconnected" ? "disconnected" : ""}"
+           :text {network-status.icon}
+           :tooltip {network-status.connection}))
 
 (defwidget right []
     (box :orientation "h"
@@ -86,7 +86,7 @@
          (tray)
          (kblayout)
          (battery)
-         (wifi)))
+         (network)))
 
 ;; WINDOW
 

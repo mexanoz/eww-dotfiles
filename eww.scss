@@ -1,3 +1,5 @@
+@use "sass:color";
+
 * {
   all: unset; //Unsets everything so you can style everything from scratch
 }
@@ -8,6 +10,8 @@ $font: Cantarell, Symbols Nerd Font Mono;
 $background-color: #282828;
 $white: #e1d9f4;
 $green: #6ace9e;
+$light-blue: #809ee5;
+$red: #f7768e;
 
 .bar {
   font: 16px $font;
@@ -55,6 +59,18 @@ tooltip {
 }
 
 .playerctl {
+  @mixin colored-button($class, $color) {
+    &.#{$class} button {
+      color: $color;
+
+      &:hover {
+        color: color.scale($color, $lightness: 30%);
+      }
+    }
+  }
+
+  $dim-blue: #648392;
+
   background: $background-color;
   padding-left: 15px;
   padding-right: 10px;
@@ -63,13 +79,8 @@ tooltip {
   margin-bottom: 5px;
   margin-left: 0;
 
-  &.playing {
-    color: #809ee5;
-  }
-
-  &.paused {
-    color: #648392;
-  }
+  @include colored-button(playing, $light-blue);
+  @include colored-button(paused, $dim-blue);
 }
 
 // CENTER
@@ -86,13 +97,15 @@ tooltip {
 // RIGHT
 
 .right {
+  font-size: 18px;
   background: $background-color;
   border-radius: 24px 0px 0px 4px;
   padding: 0 10px 0 12px;
 }
 
 .language {
-  border: 1px solid darken($white, 20%);
+  font-size: 16px;
+  border: 1px solid color.scale($white, $lightness: -20%);
   border-radius: 4px;
   padding: 0 1px 1px 1px;
 }
@@ -101,7 +114,15 @@ tooltip {
   color: $green;
 
   &.warning {
-    color: #f7768e;
+    color: $red;
+  }
+}
+
+.network {
+  color: $light-blue;
+
+  &.disconnected {
+    color: $red;
   }
 }
 
