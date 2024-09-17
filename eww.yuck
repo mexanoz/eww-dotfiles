@@ -1,5 +1,7 @@
 (deflisten workspace "scripts/bin/workspace")
 (deflisten language "scripts/bin/language")
+(deflisten playerctl-output 'playerctl metadata -aFf \'{"status": "{{lc(status)}}", "player": "{{playerName}}", "artist": "{{artist}}", "title": "{{title}}"}\'')
+(deflisten wifi-status "scripts/wifi")
 
 ;; LEFT
 
@@ -8,11 +10,26 @@
      :class "workspaces"
      :content workspace))
 
+(defwidget playerctl []
+    (box :orientation "h"
+         :space-evenly false
+         :class "playerctl ${playerctl-output != "" ? playerctl-output.status : ""}"
+         :visible {playerctl-output != ""}
+         (button :onclick "playerctl previous" "󰒮 ")
+         (button :onclick "playerctl play-pause" 
+             {playerctl-output != ""
+                 ? playerctl-output.status == "playing"
+                     ? "󰐌 " 
+                     : "󰏥 "
+                 : ""})
+         (button :onclick "playerctl next" "󰒭 ")))
+
 (defwidget left []
     (box :orientation "h"
          :space-evenly false
          :halign "start"
-         (workspaces)))
+         (workspaces)
+         (playerctl)))
 
 ;; CENTER
 
@@ -29,15 +46,47 @@
 
 ;; RIGHT
 
+(defwidget tray []
+    (systray :space-evenly false))
+
 (defwidget kblayout []
-    (label :text language))
+    (eventbox 
+        :onclick "hyprctl switchxkblayout main next" 
+        :valign "center"
+        (label :class "language" :text language)))
+
+(defwidget battery []
+    (label :class "battery ${EWW_BATTERY.BAT0.status == "Not charging" && EWW_BATTERY.BAT0.capacity <= 25 ? "warning" : ""}"
+           :tooltip "${EWW_BATTERY.BAT0.capacity}%"
+           :text "${EWW_BATTERY.BAT0.status =~ "(Full|Not charging)"
+                      ? " "
+                      : EWW_BATTERY.BAT0.status == "Charging"
+                          ? EWW_BATTERY.BAT0.capacity <= 30
+                              ? "󱊤 "
+                              : EWW_BATTERY.BAT0.capacity <= 70
+                                  ? "󱊥 "
+                                  : "󱊦 "
+                          : EWW_BATTERY.BAT0.capacity <= 30
+                              ? "󱊡 "
+                              : EWW_BATTERY.BAT0.capacity <= 70
+                                  ? "󱊢 "
+                                  : "󱊣 "}"))
+
+(defwidget wifi []
+    (label :class "wifi"
+           :text {wifi-status.icon}
+           :tooltip {wifi-status.connection}))
 
 (defwidget right []
     (box :orientation "h"
          :space-evenly false
          :halign "end"
          :class "right"
-         (kblayout)))
+         :spacing 5
+         (tray)
+         (kblayout)
+         (battery)
+         (wifi)))
 
 ;; WINDOW
 

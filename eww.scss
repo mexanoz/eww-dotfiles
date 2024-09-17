@@ -2,20 +2,33 @@
   all: unset; //Unsets everything so you can style everything from scratch
 }
 
-//Global Styles
+// GLOBAL
+
+$font: Cantarell, Symbols Nerd Font Mono;
+$background-color: #282828;
+$white: #e1d9f4;
+$green: #6ace9e;
+
 .bar {
-  font: 16px Cantarell, FontAwesome, Symbols Nerd Font Mono;
+  font: 16px $font;
   background-color: transparent;
-  color: #e1d9f4;
+  color: $white;
+}
+
+tooltip {
+  font: 14px $font;
+  background-color: transparent;
+  color: $white;
+  background: $background-color;
+  border-radius: 16px;
 }
 
 // LEFT
 
 .workspaces {
-  background: #282828;
+  background: $background-color;
   margin: 0px 10px 5px 10px;
   border-radius: 16px;
-  border: solid 0px #d9e1f4;
   font-weight: 600;
   font-size: 20px;
 }
@@ -26,25 +39,44 @@
   padding-bottom: 3px;
   border-radius: 16px;
   color: #748392;
-}
-
-.workspace-button.active {
-  color: #e1d9f4;
-  border-radius: 16px;
-}
-
-.workspace-button:hover {
-  background-color: #b9c6e6;
-  color: black;
-  border-radius: 16px;
   transition: all .3s;
+
+  &.active {
+    color: $white;
+    border-radius: 16px;
+  }
+
+  &:hover {
+    background-color: #b9c6e6;
+    color: black;
+    border-radius: 16px;
+    transition: all .3s;
+  }
+}
+
+.playerctl {
+  background: $background-color;
+  padding-left: 15px;
+  padding-right: 10px;
+  border-radius: 16px;
+  margin-top: 0;
+  margin-bottom: 5px;
+  margin-left: 0;
+
+  &.playing {
+    color: #809ee5;
+  }
+
+  &.paused {
+    color: #648392;
+  }
 }
 
 // CENTER
 
 .clock {
   color: #B9C6E6;
-  background-color: #282828;
+  background-color: $background-color;
   border-radius: 24px 8px;
   padding: 0px 15px;
   font-weight: 500;
@@ -54,9 +86,22 @@
 // RIGHT
 
 .right {
-  background: #282828;
+  background: $background-color;
   border-radius: 24px 0px 0px 4px;
-  padding-left: 10px;
-  // padding-bottom: 0px;
+  padding: 0 10px 0 12px;
+}
+
+.language {
+  border: 1px solid darken($white, 20%);
+  border-radius: 4px;
+  padding: 0 1px 1px 1px;
+}
+
+.battery {
+  color: $green;
+
+  &.warning {
+    color: #f7768e;
+  }
 }
 
