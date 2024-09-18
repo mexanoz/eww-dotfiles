@@ -11,7 +11,10 @@ $background-color: #282828;
 $white: #e1d9f4;
 $green: #6ace9e;
 $light-blue: #809ee5;
+$dim-blue: #648392;
+$dark-blue: #2b3948;
 $red: #f7768e;
+$yellow: #c6bf57;
 
 .bar {
   font: 16px $font;
@@ -21,10 +24,24 @@ $red: #f7768e;
 
 tooltip {
   font: 14px $font;
-  background-color: transparent;
   color: $white;
   background: $background-color;
   border-radius: 16px;
+}
+
+menu {
+  font: 15px $font;
+  background: $background-color;
+  border-radius: 8px;
+
+  menuitem {
+    border-radius: 8px;
+    padding: 2px 3px;
+
+    &:hover {
+      background: $dark-blue;
+    }
+  }
 }
 
 // LEFT
@@ -68,8 +85,6 @@ tooltip {
       }
     }
   }
-
-  $dim-blue: #648392;
 
   background: $background-color;
   padding-left: 15px;
@@ -124,5 +139,10 @@ tooltip {
   &.disconnected {
     color: $red;
   }
+}
+
+.volume {
+  padding-left: 2px;
+  color: $yellow;
 }
 

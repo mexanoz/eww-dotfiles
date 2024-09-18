@@ -1,8 +1,39 @@
 #!/usr/bin/env bash
 
+get-sink-index() {
+    pactl -fjson list sinks | jq ".[] | select(.name == \"$1\").index"
+}
+
+update() {
+    if [[ $default_sink_name == "auto_null" ]]; then
+        echo '{"icon": "", "volume": "No sink"}'
+    else
+        volume=$(pamixer --get-volume-human)
+        if [[ $volume == muted ]]; then
+            icon=""
+        elif [[ $volume < 30% ]]; then
+            icon=""
+        elif [[ $volume < 60% ]]; then
+            icon=""
+        else
+            icon=""
+        fi
+        echo "{\"icon\": \"$icon\", \"volume\": \"$volume\"}"
+    fi
+}
+
 exec 2>/dev/null
-defaultsink=$(pactl -fjson list sinks | jq ".[] | select(.name == \"$(pactl get-default-sink)\").index")
-pactl -fjson subscribe | while read -r event; do
-    [[ $(jq "select(.event == \"change\" and .on == \"sink\" and .index == $defaultsink)" <<< "$event") ]] &&
-        pactl get-sink-volume "$defaultsink" | sed -En "s/.* ([[:digit:]]{1,3})%.*/\1/p"
-done
+default_sink_name="$(pactl get-default-sink)"
+default_sink=$(get-sink-index "$default_sink_name")
+update
+while read -r event; do
+    if [[ $(jq 'select(.on == "sink")' <<< "$event") ]]; then
+        case $(jq -r '.event' <<< "$event") in
+            new) default_sink_name="$(pactl get-default-sink)"
+                 default_sink=$(get-sink-index "$default_sink_name")
+                 update ;;
+            change) [[ $default_sink_name != auto_null && -n $(jq "select(.index == $default_sink)" <<< "$event") ]] &&
+                        update ;;
+        esac
+    fi
+done < <(pactl -fjson subscribe)

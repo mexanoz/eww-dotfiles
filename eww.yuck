@@ -1,24 +1,27 @@
 (deflisten workspace "scripts/bin/workspace")
-(deflisten language "scripts/bin/language")
-(deflisten playerctl-output 'playerctl metadata -aFf \'{"status": "{{lc(status)}}", "player": "{{playerName}}", "artist": "{{artist}}", "title": "{{title}}"}\'')
-(deflisten network-status "scripts/network")
+(deflisten language :initial "en" "scripts/bin/language")
+(deflisten playerctl-status 'playerctl metadata -aFf \'{"status": "{{lc(status)}}", "player": "{{playerName}}", "artist": "{{artist}}", "title": "{{title}}"}\'')
+(deflisten network-status :initial '{"icon": "󰩠", "connection": ""}'
+    "scripts/network")
+(deflisten volume-status :initial '{"icon": "", "volume": ""}'
+    "scripts/volume")
 
 ;; LEFT
 
 (defwidget workspaces []
     (literal
-     :class "workspaces"
-     :content workspace))
+        :class "workspaces"
+        :content workspace))
 
 (defwidget playerctl []
     (box :orientation "h"
          :space-evenly false
-         :class "playerctl ${playerctl-output != "" ? playerctl-output.status : ""}"
-         :visible {playerctl-output != ""}
+         :class "playerctl ${playerctl-status != "" ? playerctl-status.status : ""}"
+         :visible {playerctl-status != ""}
          (button :onclick "playerctl previous" "󰒮 ")
          (button :onclick "playerctl play-pause" 
-             {playerctl-output != ""
-                 ? playerctl-output.status == "playing"
+             {playerctl-status != ""
+                 ? playerctl-status.status == "playing"
                      ? "󰏥 " 
                      : "󰐌 "
                  : ""})
@@ -35,8 +38,8 @@
 
 (defwidget clock []
     (label
-     :text { formattime(EWW_TIME, "%a, %-d %B %Y  %H:%M")}
-     :class "clock"))
+        :text { formattime(EWW_TIME, "%a, %-d %B %Y  %H:%M")}
+        :class "clock"))
 
 (defwidget center []
     (box :orientation "h"
@@ -59,23 +62,29 @@
     (label :class "battery ${EWW_BATTERY.BAT0.status == "Not charging" && EWW_BATTERY.BAT0.capacity <= 25 ? "warning" : ""}"
            :tooltip "${EWW_BATTERY.BAT0.capacity}%"
            :text "${EWW_BATTERY.BAT0.status =~ "(Full|Not charging)"
-                      ? " "
+                      ? ""
                       : EWW_BATTERY.BAT0.status == "Charging"
                           ? EWW_BATTERY.BAT0.capacity <= 30
-                              ? "󱊤 "
+                              ? "󱊤"
                               : EWW_BATTERY.BAT0.capacity <= 70
-                                  ? "󱊥 "
-                                  : "󱊦 "
+                                  ? "󱊥"
+                                  : "󱊦"
                           : EWW_BATTERY.BAT0.capacity <= 30
-                              ? "󱊡 "
+                              ? "󱊡"
                               : EWW_BATTERY.BAT0.capacity <= 70
-                                  ? "󱊢 "
-                                  : "󱊣 "}"))
+                                  ? "󱊢"
+                                  : "󱊣"}"))
 
 (defwidget network []
     (label :class "network ${network-status.connection == "disconnected" ? "disconnected" : ""}"
            :text {network-status.icon}
            :tooltip {network-status.connection}))
+
+(defwidget volume []
+    (eventbox :onrightclick "pavucontrol &"
+        (label :class "volume"
+               :text {volume-status.icon}
+               :tooltip {volume-status.volume})))
 
 (defwidget right []
     (box :orientation "h"
@@ -86,15 +95,16 @@
          (tray)
          (kblayout)
          (battery)
-         (network)))
+         (network)
+         (volume)))
 
 ;; WINDOW
 
 (defwindow bar
     :geometry (geometry
-               :width "100%"
-               :height "22px"
-               :anchor "bottom center")
+                  :width "100%"
+                  :height "22px"
+                  :anchor "bottom center")
     :exclusive true
     :stacking "fg"
     :monitor 0
