@@ -37,6 +37,7 @@ menu {
   menuitem {
     border-radius: 8px;
     padding: 2px 3px;
+    margin: 2px 0;
 
     &:hover {
       background: $dark-blue;
@@ -116,6 +117,10 @@ menu {
   background: $background-color;
   border-radius: 24px 0px 0px 4px;
   padding: 0 10px 0 12px;
+
+  * {
+    padding: 0 2px;
+  }
 }
 
 .language {
@@ -142,7 +147,7 @@ menu {
 }
 
 .volume {
-  padding-left: 2px;
   color: $yellow;
+  padding-right: 0;
 }
 
