@@ -75,9 +75,10 @@
                                   : "󱊣"}"))
 
 (defwidget network []
-    (label :class "network ${network-status.connection == "disconnected" ? "disconnected" : ""}"
-           :text {network-status.icon}
-           :tooltip {network-status.connection}))
+    (eventbox :onrightclick "nm-connection-editor &"
+        (label :class "network ${network-status.connection == "disconnected" ? "disconnected" : ""}"
+               :text {network-status.icon}
+               :tooltip {network-status.connection})))
 
 (defwidget volume []
     (eventbox :onrightclick "pavucontrol &"

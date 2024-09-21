@@ -9,6 +9,7 @@
 $font: Cantarell, Symbols Nerd Font Mono;
 $background-color: #282828;
 $white: #e1d9f4;
+$grey: #748392;
 $green: #6ace9e;
 $light-blue: #809ee5;
 $dim-blue: #648392;
@@ -30,7 +31,7 @@ tooltip {
 }
 
 menu {
-  font: 15px $font;
+  font: 14px $font;
   background: $background-color;
   border-radius: 8px;
 
@@ -42,6 +43,10 @@ menu {
     &:hover {
       background: $dark-blue;
     }
+  }
+
+  separator {
+    background-color: $grey;
   }
 }
 
@@ -60,7 +65,7 @@ menu {
   padding-top: 2px;
   padding-bottom: 3px;
   border-radius: 16px;
-  color: #748392;
+  color: $grey;
   transition: all .3s;
 
   &.active {
