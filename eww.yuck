@@ -1,7 +1,6 @@
 (deflisten workspace "scripts/bin/workspace")
 (deflisten language :initial "en" "scripts/bin/language")
-(deflisten playerctl-status :initial '{"status": "none", "player": "", "artist": "", "title": ""}'
-    'playerctl metadata -aFf \'{"status": "{{lc(status)}}", "player": "{{markup_escape(playerName)}}", "artist": "{{markup_escape(artist)}}", "title": "{{markup_escape(title)}}"}\'')
+(deflisten playerctl-status 'playerctl metadata -aFf \'{"status": "{{lc(status)}}", "player": "{{playerName}}", "artist": "{{artist}}", "title": "{{title}}"}\'')
 (deflisten network-status :initial '{"icon": "󰩠", "connection": ""}'
     "scripts/network")
 (deflisten volume-status :initial '{"icon": "", "volume": ""}'
@@ -17,13 +16,15 @@
 (defwidget playerctl []
     (box :orientation "h"
          :space-evenly false
-         :class "playerctl ${playerctl-status.status}"
-         :visible {playerctl-status.status != "none"}
+         :class "playerctl ${playerctl-status != "" ? playerctl-status.status : ""}"
+         :visible {playerctl-status != ""}
          (button :onclick "playerctl previous" "󰒮 ")
          (button :onclick "playerctl play-pause" 
-             {playerctl-status.status == "playing"
-                 ? "󰏥 " 
-                 : "󰐌 "})
+             {playerctl-status != ""
+                 ? playerctl-status.status == "playing"
+                     ? "󰏥 " 
+                     : "󰐌 "
+                 : ""})
          (button :onclick "playerctl next" "󰒭 ")))
 
 (defwidget left []
