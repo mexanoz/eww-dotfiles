@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+pkill language
+pkill workspace
+pkill -f "bash scripts/"
+pkill -f "playerctl metadata"

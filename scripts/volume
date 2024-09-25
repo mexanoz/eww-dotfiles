@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+sigterm() {
+    pkill -P $$
+    exit 0
+}
+
+trap sigterm 15
+
 get-sink-index() {
     pactl -fjson list sinks | jq ".[] | select(.name == \"$1\").index"
 }
@@ -23,6 +30,14 @@ update() {
 }
 
 exec 2>/dev/null
+i=0
+while [[ $(systemctl --user show pipewire-pulse --property=Result) != Result=success ]]; do
+    sleep 1
+    (( i++ ))
+    if (( i >= 30 )); then
+        exit 1
+    fi
+done
 default_sink_name="$(pactl get-default-sink)"
 default_sink=$(get-sink-index "$default_sink_name")
 update

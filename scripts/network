@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+sigterm() {
+    pkill -P $$
+    exit 0
+}
+
+trap sigterm 15
+
 export LC_ALL=C.UTF-8 
 
 get_status() {
