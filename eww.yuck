@@ -1,6 +1,6 @@
 (deflisten workspace "scripts/bin/workspace")
 (deflisten language :initial "en" "scripts/bin/language")
-(deflisten playerctl-status 'playerctl metadata -aFf \'{"status": "{{lc(status)}}", "player": "{{playerName}}", "artist": "{{artist}}", "title": "{{title}}"}\'')
+(deflisten playerctl-status 'playerctl metadata -aFf \'{"status": "{{lc(status)}}", "player": "{{markup_escape(playerName)}}", "artist": "{{markup_escape(artist)}}", "title": "{{markup_escape(title)}}"}\'')
 (deflisten network-status :initial '{"icon": "󰩠", "connection": ""}'
     "scripts/network")
 (deflisten volume-status :initial '{"icon": "", "volume": ""}'
@@ -18,6 +18,7 @@
          :space-evenly false
          :class "playerctl ${playerctl-status != "" ? playerctl-status.status : ""}"
          :visible {playerctl-status != ""}
+         :tooltip {playerctl-status != "" ? "${playerctl-status.artist} - ${playerctl-status.title}" : ""}
          (button :onclick "playerctl previous" "󰒮 ")
          (button :onclick "playerctl play-pause" 
              {playerctl-status != ""
