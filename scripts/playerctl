@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+fields=(
+    '"status": "{{lc(status)}}"'
+    '"player": "{{markup_escape(playerName)}}"'
+    '"artist": "{{markup_escape(artist)}}"'
+    '"title": "{{markup_escape(title)}}"'
+)
+IFS=',' arg="{${fields[*]}}"
+exec playerctl metadata -aFf "$arg"

@@ -1,6 +1,7 @@
 (deflisten workspace "scripts/bin/workspace")
 (deflisten language :initial "en" "scripts/bin/language")
-(deflisten playerctl-status 'playerctl metadata -aFf \'{"status": "{{lc(status)}}", "player": "{{markup_escape(playerName)}}", "artist": "{{markup_escape(artist)}}", "title": "{{markup_escape(title)}}"}\'')
+(deflisten caps :initial "false" "scripts/bin/caps")
+(deflisten playerctl-status "scripts/playerctl")
 (deflisten network-status :initial '{"icon": "󰩠", "connection": ""}'
     "scripts/network")
 (deflisten volume-status :initial '{"icon": "", "volume": ""}'
@@ -57,7 +58,10 @@
     (eventbox 
         :onclick "hyprctl switchxkblayout main next" 
         :valign "center"
-        (label :class "language" :text language)))
+        (label 
+            :class "language ${caps ? "caps" : "nocaps"}"
+            :width 27
+            :text language)))
 
 (defwidget battery []
     (label :class "battery ${EWW_BATTERY.BAT0.status == "Not charging" && EWW_BATTERY.BAT0.capacity <= 25 ? "warning" : ""}"

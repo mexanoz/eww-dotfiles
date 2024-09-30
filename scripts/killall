@@ -2,5 +2,6 @@
 
 pkill language
 pkill workspace
+pkill caps
 pkill -f "bash scripts/"
 pkill -f "playerctl metadata"

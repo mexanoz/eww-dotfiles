@@ -38,6 +38,7 @@ while [[ $(systemctl --user show pipewire-pulse --property=Result) != Result=suc
         exit 1
     fi
 done
+sleep 1
 default_sink_name="$(pactl get-default-sink)"
 default_sink=$(get-sink-index "$default_sink_name")
 update

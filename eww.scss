@@ -132,7 +132,13 @@ menu {
   font-size: 16px;
   border: 1px solid color.scale($white, $lightness: -20%);
   border-radius: 4px;
-  padding: 0 1px 1px 1px;
+  padding: 0 2px 1px 2px;
+  margin: 0 1px;
+
+  &.caps {
+    border-width: 2px;
+    margin: 0;
+  }
 }
 
 .battery {
