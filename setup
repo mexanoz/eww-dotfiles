@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+bin_scripts=("niri-eww" "network-eww")
+
+git submodule update --init
+for s in "${bin_scripts[@]}"; do
+    cargo install --path "scripts/$s" --no-track
+done
