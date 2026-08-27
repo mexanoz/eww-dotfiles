@@ -16,6 +16,7 @@ $dim-blue: #648392;
 $dark-blue: #2b3948;
 $red: #f7768e;
 $yellow: #c6bf57;
+$language: #90b1b1;
 
 .bar {
   font: 16px $font;
@@ -54,7 +55,7 @@ menu {
 
 .workspaces {
   background: $background-color;
-  margin: 0px 10px 5px 10px;
+  margin: 0px 10px 5px 8px;
   border-radius: 16px;
   font-weight: 600;
   font-size: 20px;
@@ -104,6 +105,10 @@ menu {
   @include colored-button(paused, $dim-blue);
 }
 
+.left {
+  margin-left: 4px;
+}
+
 // CENTER
 
 .clock {
@@ -130,10 +135,12 @@ menu {
 
 .language {
   font-size: 16px;
-  border: 1px solid color.scale($white, $lightness: -20%);
+  border: 1px solid $language;
+  /* border: 1px solid color.scale($white, $lightness: -20%); */
   border-radius: 4px;
   padding: 0 2px 1px 2px;
   margin: 0 1px;
+  color: $language;
 
   &.caps {
     border-width: 2px;
@@ -165,4 +172,3 @@ menu {
     color: $red;
   }
 }
-

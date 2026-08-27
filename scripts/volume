@@ -16,11 +16,12 @@ update() {
         echo '{"icon": "", "volume": "No sink"}'
     else
         volume=$(pamixer --get-volume-human)
-        if [[ $volume == muted ]]; then
+        volumecmp=${volume%\%}
+        if [[ $volumecmp == muted ]]; then
             icon=""
-        elif [[ $volume < 30% ]]; then
+        elif [[ $volumecmp -lt 30 ]]; then
             icon=""
-        elif [[ $volume < 60% ]]; then
+        elif [[ $volumecmp -lt 60 ]]; then
             icon=""
         else
             icon=""

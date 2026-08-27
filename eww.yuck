@@ -1,46 +1,50 @@
-(deflisten workspace "scripts/bin/workspace")
-(deflisten language :initial "en" "scripts/bin/language")
-(deflisten caps :initial "false" "scripts/bin/caps")
+(deflisten niri-status "scripts/bin/niri-eww")
+(deflisten network-status "scripts/bin/network-eww")
 (deflisten playerctl-status "scripts/playerctl")
-(deflisten network-status :initial '{"icon": "󰩠", "connection": ""}'
-    "scripts/network")
-(deflisten volume-status :initial '{"icon": "", "volume": ""}'
-    "scripts/volume")
+(deflisten volume-status
+    :initial '{"icon": "", "volume": ""}'
+     "scripts/volume")
 
 ;; LEFT
 
-(defwidget workspaces []
-    (literal
-        :class "workspaces"
-        :content workspace))
+(defwidget windows []
+    (box (for window in {niri-status.windows}
+        (button
+            :class "window-button"
+            :onclick "niri msg action focus-window --id ${window.id}"
+            (overlay
+                (image :icon-size "dnd" :icon {window.app_id})
+                (circular-progress
+                    :class "window-focus"
+                    :value 100
+                    :thickness {window.is_focused ? 2 : 0}))))))
 
 (defwidget playerctl []
     (box :orientation "h"
          :space-evenly false
-         :class "playerctl ${playerctl-status != "" ? playerctl-status.status : ""}"
+         :class "playerctl ${playerctl-status?.status}"
          :visible {playerctl-status != ""}
-         :tooltip {playerctl-status != "" ? "${playerctl-status.artist} - ${playerctl-status.title}" : ""}
+         :tooltip {"${playerctl-status?.artist} - ${playerctl-status?.title}"}
          (button :onclick "playerctl previous" "󰒮 ")
          (button :onclick "playerctl play-pause" 
-             {playerctl-status != ""
-                 ? playerctl-status.status == "playing"
-                     ? "󰏥 " 
-                     : "󰐌 "
-                 : ""})
+             {playerctl-status?.status == "playing"
+                 ? "󰏥 " 
+                 : "󰐌 "})
          (button :onclick "playerctl next" "󰒭 ")))
 
 (defwidget left []
     (box :orientation "h"
          :space-evenly false
          :halign "start"
-         (workspaces)
+         :class "left"
+         (windows)
          (playerctl)))
 
 ;; CENTER
 
 (defwidget clock []
     (label
-        :text { formattime(EWW_TIME, "%a, %-d %B %Y  %H:%M")}
+        :text { formattime(EWW_TIME, "%a, %-d %B %Y | %H:%M")}
         :class "clock"))
 
 (defwidget center []
@@ -56,35 +60,35 @@
 
 (defwidget kblayout []
     (eventbox 
-        :onclick "hyprctl switchxkblayout main next" 
+        :onclick "niri msg action switch-layout next"
         :valign "center"
         (label 
-            :class "language ${caps ? "caps" : "nocaps"}"
+            :class "language"
             :width 27
-            :text language)))
+            :text {niri.layout})))
 
 (defwidget battery []
-    (label :class "battery ${EWW_BATTERY.BAT0.status == "Not charging" && EWW_BATTERY.BAT0.capacity <= 25 ? "warning" : ""}"
-           :tooltip "${EWW_BATTERY.BAT0.capacity}%"
-           :text "${EWW_BATTERY.BAT0.status =~ "(Full|Not charging)"
-                      ? ""
-                      : EWW_BATTERY.BAT0.status == "Charging"
-                          ? EWW_BATTERY.BAT0.capacity <= 30
-                              ? "󱊤"
-                              : EWW_BATTERY.BAT0.capacity <= 70
-                                  ? "󱊥"
-                                  : "󱊦"
-                          : EWW_BATTERY.BAT0.capacity <= 30
-                              ? "󱊡"
-                              : EWW_BATTERY.BAT0.capacity <= 70
-                                  ? "󱊢"
-                                  : "󱊣"}"))
+    (label 
+        :class "battery ${EWW_BATTERY.BAT0.status == "Not charging" && EWW_BATTERY.BAT0.capacity <= 25 ? "warning" : ""}"
+        :tooltip "${EWW_BATTERY.BAT0.capacity}%"
+        :text {EWW_BATTERY.BAT0.status =~ "(Full|Not charging)"
+                   ? ""
+                   : EWW_BATTERY.BAT0.status == "Charging"
+                       ? EWW_BATTERY.BAT0.capacity <= 30
+                           ? "󱊤"
+                           : EWW_BATTERY.BAT0.capacity <= 70
+                               ? "󱊥"
+                               : "󱊦"
+                       : EWW_BATTERY.BAT0.capacity <= 30
+                           ? "󱊡"
+                           : EWW_BATTERY.BAT0.capacity <= 70
+                               ? "󱊢"
+                               : "󱊣"}))
 
 (defwidget network []
-    (eventbox :onrightclick "nm-connection-editor &"
-        (label :class "network ${network-status.connection == "disconnected" ? "disconnected" : ""}"
-               :text {network-status.icon}
-               :tooltip {network-status.connection})))
+    (label :class "network ${network-status.state}"
+           :text {network-status.icon}
+           :tooltip {network-status.iface}))
 
 (defwidget volume []
     (eventbox :onrightclick "pavucontrol &"

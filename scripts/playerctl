@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 fields=(
-    '"status": "{{lc(status)}}"'
-    '"player": "{{markup_escape(playerName)}}"'
-    '"artist": "{{markup_escape(artist)}}"'
-    '"title": "{{markup_escape(title)}}"'
+    '@@@status@@@:@@@{{lc(status)}}@@@'
+    '@@@player@@@:@@@{{playerName}}@@@'
+    '@@@artist@@@:@@@{{artist}}@@@'
+    '@@@title@@@:@@@{{title}}@@@'
 )
 IFS=',' arg="{${fields[*]}}"
-exec playerctl metadata -aFf "$arg"
+exec playerctl metadata -aFf "$arg" | while read -r output; do
+    escaped=${output//\"/\\\"}
+    echo "${escaped//@@@/\"}"
+done

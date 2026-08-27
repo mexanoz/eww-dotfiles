@@ -1,0 +1,6 @@
+[submodule "scripts/network-eww"]
+	path = scripts/network-eww
+	url = git@github.com:mexanoz/network-eww.git
+[submodule "scripts/niri-eww"]
+	path = scripts/niri-eww
+	url = git@github.com:mexanoz/niri-eww.git
