@@ -65,7 +65,7 @@
         (label 
             :class "language"
             :width 27
-            :text {niri.layout})))
+            :text {niri-status.layout})))
 
 (defwidget battery []
     (label 
