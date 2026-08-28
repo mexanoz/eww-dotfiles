@@ -27,7 +27,7 @@ $language: #90b1b1;
 tooltip {
   font: 14px $font;
   color: $white;
-  background: $background-color;
+  background-color: color.change($background-color, $alpha: 0.99);
   border-radius: 16px;
 }
 
