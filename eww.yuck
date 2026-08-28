@@ -2,123 +2,123 @@
 (deflisten network-status "scripts/bin/network-eww")
 (deflisten playerctl-status "scripts/playerctl")
 (deflisten volume-status
-    :initial '{"icon": "", "volume": ""}'
-     "scripts/volume")
+  :initial '{"icon": "", "volume": ""}'
+"scripts/volume")
 
 ;; LEFT
 
 (defwidget windows []
-    (box (for window in {niri-status.windows}
-        (button
-            :class "window-button"
-            :onclick "niri msg action focus-window --id ${window.id}"
-            (overlay
-                (image :icon-size "dnd" :icon {window.app_id})
-                (circular-progress
-                    :class "window-focus"
-                    :value 100
-                    :thickness {window.is_focused ? 2 : 0}))))))
+  (box (for window in {niri-status.windows}
+      (button
+        :class "window-button"
+        :onclick "niri msg action focus-window --id ${window.id}"
+        (overlay
+          (image :icon-size "dnd" :icon {window.app_id})
+          (circular-progress
+            :class "window-focus"
+            :value 100
+          :thickness {window.is_focused ? 2 : 0}))))))
 
 (defwidget playerctl []
-    (box :orientation "h"
-         :space-evenly false
-         :class "playerctl ${playerctl-status?.status}"
-         :visible {playerctl-status != ""}
-         :tooltip {"${playerctl-status?.artist} - ${playerctl-status?.title}"}
-         (button :onclick "playerctl previous" "󰒮 ")
-         (button :onclick "playerctl play-pause" 
-             {playerctl-status?.status == "playing"
-                 ? "󰏥 " 
-                 : "󰐌 "})
-         (button :onclick "playerctl next" "󰒭 ")))
+  (box :orientation "h"
+    :space-evenly false
+    :class "playerctl ${playerctl-status?.status}"
+    :visible {playerctl-status != ""}
+    :tooltip {"${playerctl-status?.artist} - ${playerctl-status?.title}"}
+    (button :onclick "playerctl previous" "󰒮 ")
+    (button :onclick "playerctl play-pause"
+      {playerctl-status?.status == "playing"
+      ? "󰏥 "
+    : "󰐌 "})
+    (button :onclick "playerctl next" "󰒭 ")))
 
 (defwidget left []
-    (box :orientation "h"
-         :space-evenly false
-         :halign "start"
-         :class "left"
-         (windows)
-         (playerctl)))
+  (box :orientation "h"
+    :space-evenly false
+    :halign "start"
+    :class "left"
+    (windows)
+    (playerctl)))
 
 ;; CENTER
 
 (defwidget clock []
-    (label
-        :text { formattime(EWW_TIME, "%a, %-d %B %Y | %H:%M")}
-        :class "clock"))
+  (label
+    :text {formattime(EWW_TIME, "%a, %-d %B %Y | %H:%M")}
+  :class "clock"))
 
 (defwidget center []
-    (box :orientation "h"
-         :space-evenly false
-         :halign "center"
-         (clock)))
+  (box :orientation "h"
+    :space-evenly false
+    :halign "center"
+    (clock)))
 
 ;; RIGHT
 
 (defwidget tray []
-    (systray :space-evenly false))
+  (systray :space-evenly false))
 
 (defwidget kblayout []
-    (eventbox 
-        :onclick "niri msg action switch-layout next"
-        :valign "center"
-        (label 
-            :class "language"
-            :width 27
-            :text {niri-status.layout})))
+  (eventbox
+    :onclick "niri msg action switch-layout next"
+    :valign "center"
+    (label
+      :class "language"
+      :width 27
+    :text {niri-status.layout})))
 
 (defwidget battery []
-    (label 
-        :class "battery ${EWW_BATTERY.BAT0.status == "Not charging" && EWW_BATTERY.BAT0.capacity <= 25 ? "warning" : ""}"
-        :tooltip "${EWW_BATTERY.BAT0.capacity}%"
-        :text {EWW_BATTERY.BAT0.status =~ "(Full|Not charging)"
-                   ? ""
-                   : EWW_BATTERY.BAT0.status == "Charging"
-                       ? EWW_BATTERY.BAT0.capacity <= 30
-                           ? "󱊤"
-                           : EWW_BATTERY.BAT0.capacity <= 70
-                               ? "󱊥"
-                               : "󱊦"
-                       : EWW_BATTERY.BAT0.capacity <= 30
-                           ? "󱊡"
-                           : EWW_BATTERY.BAT0.capacity <= 70
-                               ? "󱊢"
-                               : "󱊣"}))
+  (label
+    :class "battery ${EWW_BATTERY.BAT0.status == "Not charging" && EWW_BATTERY.BAT0.capacity <= 25 ? "warning" : ""}"
+    :tooltip "${EWW_BATTERY.BAT0.capacity}%"
+    :text {EWW_BATTERY.BAT0.status =~ "(Full|Not charging)"
+    ? ""
+    : EWW_BATTERY.BAT0.status == "Charging"
+    ? EWW_BATTERY.BAT0.capacity <= 30
+    ? "󱊤"
+    : EWW_BATTERY.BAT0.capacity <= 70
+    ? "󱊥"
+    : "󱊦"
+    : EWW_BATTERY.BAT0.capacity <= 30
+    ? "󱊡"
+    : EWW_BATTERY.BAT0.capacity <= 70
+    ? "󱊢"
+  : "󱊣"}))
 
 (defwidget network []
-    (label :class "network ${network-status.state}"
-           :text {network-status.icon}
-           :tooltip {network-status.iface}))
+  (label :class "network ${network-status.state}"
+    :text {network-status.icon}
+  :tooltip {network-status.iface}))
 
 (defwidget volume []
-    (eventbox :onrightclick "pavucontrol &"
-        (label :class "volume ${volume-status.volume == "No sink" ? "nosink" : ""}"
-               :text {volume-status.icon}
-               :tooltip {volume-status.volume})))
+  (eventbox :onrightclick "pavucontrol &"
+    (label :class "volume ${volume-status.volume == "No sink" ? "nosink" : ""}"
+      :text {volume-status.icon}
+    :tooltip {volume-status.volume})))
 
 (defwidget right []
-    (box :orientation "h"
-         :space-evenly false
-         :halign "end"
-         :class "right"
-         :spacing 5
-         (tray)
-         (kblayout)
-         (battery)
-         (network)
-         (volume)))
+  (box :orientation "h"
+    :space-evenly false
+    :halign "end"
+    :class "right"
+    :spacing 5
+    (tray)
+    (kblayout)
+    (battery)
+    (network)
+    (volume)))
 
 ;; WINDOW
 
 (defwindow bar
-    :geometry (geometry
-                  :width "100%"
-                  :height "32px"
-                  :anchor "bottom center")
-    :exclusive true
-    :stacking "fg"
-    :monitor 0
-    (box :orientation "h"
-         (left)
-         (center)
-         (right)))
+  :geometry (geometry
+    :width "100%"
+    :height "32px"
+  :anchor "bottom center")
+  :exclusive true
+  :stacking "fg"
+  :monitor 0
+  (box :orientation "h"
+    (left)
+    (center)
+    (right)))
